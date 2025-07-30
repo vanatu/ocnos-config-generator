@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>OcNOS Config Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <form method="POST" id="configForm">
+        <div class="vendor-select">
+            <select name="vendors" id="select-vendors"
+                class="{% if request.form.get('vendors') == 'Junos' %}junos{% else %}ocnos{% endif %}">
+                <option value="OcNOS" {% if request.form.get('vendors')=='OcNOS' %}selected{% endif %}>OcNOS</option>
+                <option value="Junos" {% if request.form.get('vendors')=='Junos' %}selected{% endif %}>Junos</option>
+            </select>
+            <input type="text" name="hostname" value="{{ request.form.hostname }}" placeholder="Hostname">
+        </div>
+
+        <table>
+            <tr>
+                <th>interface</th>
+                <th>IP address</th>
+                <th>isis</th>
+                <th>mpls</th>
+                <th>rsvp</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="lo" id="inp-lo" value="{{ request.form.lo }}" style="width: 100%;"></td>
+                <td><input type="text" name="ip0" value="{{ request.form.ip0 }}" placeholder="1.1.1.1/32"
+                        style="width: 100%;"></td>
+                <td><input type="checkbox" name="check1_0" value="1" {% if request.form.get('check1_0') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check2_0" value="1" {% if request.form.get('check2_0') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check3_0" value="1" {% if request.form.get('check3_0') %}checked{%
+                        endif %}></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="intf1" value="{{ request.form.intf1 }}" placeholder="Interface #1"
+                        style="width: 100%;"></td>
+                <td><input type="text" name="ip1" value="{{ request.form.ip1 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="check1_1" value="1" {% if request.form.get('check1_1') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check2_1" value="1" {% if request.form.get('check2_1') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check3_1" value="1" {% if request.form.get('check3_1') %}checked{%
+                        endif %}></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="intf2" value="{{ request.form.intf2 }}" placeholder="Interface #2"
+                        style="width: 100%;"></td>
+                <td><input type="text" name="ip2" value="{{ request.form.ip2 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="check1_2" value="1" {% if request.form.get('check1_2') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check2_2" value="1" {% if request.form.get('check2_2') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check3_2" value="1" {% if request.form.get('check3_2') %}checked{%
+                        endif %}></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="intf3" value="{{ request.form.intf3 }}" placeholder="Interface #3"
+                        style="width: 100%;"></td>
+                <td><input type="text" name="ip3" value="{{ request.form.ip3 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="check1_3" value="1" {% if request.form.get('check1_3') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check2_3" value="1" {% if request.form.get('check2_3') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check3_3" value="1" {% if request.form.get('check3_3') %}checked{%
+                        endif %}></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="intf4" value="{{ request.form.intf4 }}" placeholder="Interface #4"
+                        style="width: 100%;"></td>
+                <td><input type="text" name="ip4" value="{{ request.form.ip4 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="check1_4" value="1" {% if request.form.get('check1_4') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check2_4" value="1" {% if request.form.get('check2_4') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="check3_4" value="1" {% if request.form.get('check3_4') %}checked{%
+                        endif %}></td>
+            </tr>
+        </table>
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn-submit">Generate</button>
+            <button type="button" class="btn-clear" onclick="clearForm()">Clear</button>
+        </div>
+    </form>
+
+    {% if result %}
+    <h2>Result:</h2>
+    <pre>{{ result }}</pre>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/script.js') }}">
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+body {
+    font-family: Arial;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+input,
+button,
+select {
+    padding: 5px;
+    margin: 2px 0;
+    max-width: 100px;
+}
+
+table {
+    border-collapse: collapse;
+    margin-bottom: 8px;
+    /* width: 100%; */
+}
+
+th,
+td {
+    padding: 4px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.vendor-select {
+    margin-bottom: 8px;
+}
+
+.btn-clear {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-clear:hover {
+    background-color: #d32f2f;
+}
+
+.btn-clear:active {
+    transform: scale(0.90);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.btn-submit {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #388E3C;
+}
+
+.buttons {
+    margin-top: 20px;
+}
+
+pre {
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+/* Стили для выбора вендора */
+#select-vendors {
+    transition: all 0.3s ease;
+    padding: 5px;
+    border-radius: 4px;
+    border: 2px solid #ddd;
+}
+
+#select-vendors.ocnos {
+    background-color: #FFA500;
+    /* Оранжевый для OcNOS */
+    border-color: #FF8C00;
+    color: #333;
+}
+
+#select-vendors.junos {
+    background-color: #1E90FF;
+    /* Морской синий для Junos */
+    border-color: #0066CC;
+    color: white;
+}
