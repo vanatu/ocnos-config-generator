@@ -51,3 +51,4 @@ function clearForm() {
     // Фокус на первый элемент
     form.querySelector('input').focus();
 }
+
