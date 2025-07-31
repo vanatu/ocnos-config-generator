@@ -98,3 +98,15 @@ pre {
     color: white;
 }
 
+#select-vendors.cisco {
+    background-color: #7cc969;
+    /* Зелёный для Cisco */
+    border-color: #17a145;
+    color: #4e5d01;
+}
+
+#select-vendors.br9k {
+    background-color: #2c3c44;
+    border-color: #e61c3a;
+    color: #cacdcf;
+}

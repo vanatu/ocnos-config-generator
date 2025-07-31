@@ -13,7 +13,7 @@ function updVendor() {
     const lo = document.getElementById('inp-lo');
 
     // Удаляем предыдущие классы
-    select.classList.remove('ocnos', 'junos');
+    select.classList.remove('ocnos', 'junos', 'cisco', 'br9k');
 
     // Добавляем соответствующий класс
     if (select.value === 'Junos') {
@@ -22,7 +22,14 @@ function updVendor() {
     } else if (select.value === 'OcNOS') {
         select.classList.add('ocnos');
         lo.placeholder = 'lo';
+    } else if (select.value === 'Cisco') {
+        select.classList.add('cisco');
+        lo.placeholder = 'lo0';
+    } else if (select.value === 'BR9k') {
+        select.classList.add('br9k');
+        lo.placeholder = 'loopback 1';
     }
+
 }
 
 function clearForm() {

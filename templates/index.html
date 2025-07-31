@@ -12,6 +12,8 @@
             <select name="vendors" id="select-vendors"
                 class="{% if request.form.get('vendors') == 'Junos' %}junos{% else %}ocnos{% endif %}">
                 <option value="OcNOS" {% if request.form.get('vendors')=='OcNOS' %}selected{% endif %}>OcNOS</option>
+                <option value="BR9k" {% if request.form.get('vendors')=='BR9k' %}selected{% endif %}>BR9k</option>
+                <option value="Cisco" {% if request.form.get('vendors')=='Cisco' %}selected{% endif %}>Cisco</option>
                 <option value="Junos" {% if request.form.get('vendors')=='Junos' %}selected{% endif %}>Junos</option>
             </select>
             <input type="text" name="hostname" value="{{ request.form.hostname }}" placeholder="Hostname">
