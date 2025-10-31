@@ -23,17 +23,23 @@
             <tr>
                 <th>interface</th>
                 <th>IP address</th>
+		<th>ospf</th>
                 <th>isis</th>
                 <th>mpls</th>
+		<th>ldp</th>
                 <th>rsvp</th>
             </tr>
             <tr>
                 <td><input type="text" name="lo" id="inp-lo" value="{{ request.form.lo }}" style="width: 100%;"></td>
                 <td><input type="text" name="ip0" value="{{ request.form.ip0 }}" placeholder="1.1.1.1/32"
                         style="width: 100%;"></td>
+                <td><input type="checkbox" name="ch-ospf_0" value="1" {% if request.form.get('ch-ospf_0') %}checked{%
+                        endif %}></td>
                 <td><input type="checkbox" name="ch-isis_0" value="1" {% if request.form.get('ch-isis_0') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-mpls_0" value="1" {% if request.form.get('ch-mpls_0') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="ch-ldp_0" value="1" {% if request.form.get('ch-ldp_0') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-rsvp_0" value="1" {% if request.form.get('ch-rsvp_0') %}checked{%
                         endif %}></td>
@@ -42,9 +48,13 @@
                 <td><input type="text" name="intf1" value="{{ request.form.intf1 }}" placeholder="Interface #1"
                         style="width: 100%;"></td>
                 <td><input type="text" name="ip1" value="{{ request.form.ip1 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="ch-ospf_1" value="1" {% if request.form.get('ch-ospf_1') %}checked{%
+                        endif %}></td>
                 <td><input type="checkbox" name="ch-isis_1" value="1" {% if request.form.get('ch-isis_1') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-mpls_1" value="1" {% if request.form.get('ch-mpls_1') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="ch-ldp_1" value="1" {% if request.form.get('ch-ldp_1') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-rsvp_1" value="1" {% if request.form.get('ch-rsvp_1') %}checked{%
                         endif %}></td>
@@ -53,9 +63,13 @@
                 <td><input type="text" name="intf2" value="{{ request.form.intf2 }}" placeholder="Interface #2"
                         style="width: 100%;"></td>
                 <td><input type="text" name="ip2" value="{{ request.form.ip2 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="ch-ospf_2" value="1" {% if request.form.get('ch-ospf_2') %}checked{%
+                        endif %}></td>
                 <td><input type="checkbox" name="ch-isis_2" value="1" {% if request.form.get('ch-isis_2') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-mpls_2" value="1" {% if request.form.get('ch-mpls_2') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="ch-ldp_2" value="1" {% if request.form.get('ch-ldp_2') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-rsvp_2" value="1" {% if request.form.get('ch-rsvp_2') %}checked{%
                         endif %}></td>
@@ -64,9 +78,13 @@
                 <td><input type="text" name="intf3" value="{{ request.form.intf3 }}" placeholder="Interface #3"
                         style="width: 100%;"></td>
                 <td><input type="text" name="ip3" value="{{ request.form.ip3 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="ch-ospf_3" value="1" {% if request.form.get('ch-ospf_3') %}checked{%
+                        endif %}></td>
                 <td><input type="checkbox" name="ch-isis_3" value="1" {% if request.form.get('ch-isis_3') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-mpls_3" value="1" {% if request.form.get('ch-mpls_3') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="ch-ldp_3" value="1" {% if request.form.get('ch-ldp_3') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-rsvp_3" value="1" {% if request.form.get('ch-rsvp_3') %}checked{%
                         endif %}></td>
@@ -75,9 +93,13 @@
                 <td><input type="text" name="intf4" value="{{ request.form.intf4 }}" placeholder="Interface #4"
                         style="width: 100%;"></td>
                 <td><input type="text" name="ip4" value="{{ request.form.ip4 }}" style="width: 100%;"></td>
+                <td><input type="checkbox" name="ch-ospf_4" value="1" {% if request.form.get('ch-ospf_4') %}checked{%
+                        endif %}></td>
                 <td><input type="checkbox" name="ch-isis_4" value="1" {% if request.form.get('ch-isis_4') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-mpls_4" value="1" {% if request.form.get('ch-mpls_4') %}checked{%
+                        endif %}></td>
+                <td><input type="checkbox" name="ch-ldp_4" value="1" {% if request.form.get('ch-ldp_4') %}checked{%
                         endif %}></td>
                 <td><input type="checkbox" name="ch-rsvp_4" value="1" {% if request.form.get('ch-rsvp_4') %}checked{%
                         endif %}></td>

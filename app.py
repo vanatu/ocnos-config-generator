@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from ipaddress import IPv4Interface
+from ipaddress import IPv4Interface, IPv4Network, ip_network
 
 
 app = Flask(__name__)
@@ -16,16 +16,20 @@ def index():
         for i in range(5):  # 0 - loopback, 1-4 - интерфейсы
             intf = request.form.get(f'intf{i}', '') if i > 0 else request.form.get('lo', '')
             ip = request.form.get(f'ip{i}', '')
+            ospf = request.form.get(f'ch-ospf_{i}', '') == '1'
             isis = request.form.get(f'ch-isis_{i}', '') == '1'
             mpls = request.form.get(f'ch-mpls_{i}', '') == '1'
+            ldp = request.form.get(f'ch-ldp_{i}', '') == '1'
             rsvp = request.form.get(f'ch-rsvp_{i}', '') == '1'
             
             if intf or ip:
                 interfaces.append({
                     'name': intf,
                     'ip': ip,
+                    'ospf': ospf,
                     'isis': isis,
                     'mpls': mpls,
+                    'ldp': ldp,
                     'rsvp': rsvp
                 })
 
@@ -43,9 +47,11 @@ def index():
 
 def generate_ocnos_config(hostname, interfaces):
     config = []
-    intf_cfg = [' ']
+    intf_cfg = []
+    ospf_cfg = []
     isis_cfg = []
     rsvp_cfg = []
+    ldp_cfg = []
     net = None
     
     if hostname:
@@ -59,6 +65,7 @@ def generate_ocnos_config(hostname, interfaces):
         if not intf['name']:
             continue
             
+        intf_cfg.append("")
         intf_cfg.append(f"interface {intf['name']}")
         
         if intf['ip']:
@@ -68,12 +75,28 @@ def generate_ocnos_config(hostname, interfaces):
             else:
                 intf_cfg.append(f"ip address {intf['ip']}")
         
+        if intf['ldp']:
+            if intf['name'].startswith('lo'):
+                ldp_cfg.append("router ldp")
+                ldp_cfg.append(f"router-id {IPv4Interface(intf['ip']).ip}")
+                ldp_cfg.append(f"transport-address ipv4 {IPv4Interface(intf['ip']).ip}")
+            else:
+                intf_cfg.append("enable-ldp ipv4")
+        
+        if intf['ospf']:
+            if intf['name'].startswith('lo'):
+                ospf_cfg.append("router ospf 1")
+                ospf_cfg.append(f"ospf router-id {IPv4Interface(intf['ip']).ip}")
+                ospf_cfg.append(f"network {intf['ip']} area 0")
+            else:
+                ospf_cfg.append(f"network {ip_network(intf['ip'], strict=False)} area 0")
+
         if intf['isis']:
             if intf['name'].startswith('lo'):
                 isis_cfg.append("router isis 1")
                 isis_cfg.append("is-type level-2-only")
                 isis_cfg.append(f"net {net}")
-                isis_cfg.append(f"passive-interface {intf['name']}")
+                intf_cfg.append("ip router isis 1")
             else:
                 intf_cfg.append("ip router isis 1")
                 intf_cfg.append("isis network point-to-point")
@@ -91,19 +114,25 @@ def generate_ocnos_config(hostname, interfaces):
 
         intf_cfg.append("exit")
 
+    if len(ospf_cfg) > 0:
+        ospf_cfg.insert(0, ' ')
     if len(isis_cfg) > 0:
         isis_cfg.insert(0, ' ')
+    if len(ldp_cfg) > 0:
+        ldp_cfg.insert(0, ' ')
     if len(rsvp_cfg) > 0:
         rsvp_cfg.insert(0, ' ')
  
-    
-    return "\n".join(config + isis_cfg + rsvp_cfg + intf_cfg)
+    return "\n".join(config + ospf_cfg + isis_cfg + ldp_cfg + rsvp_cfg + intf_cfg)
+
 
 def generate_br9k_config(hostname, interfaces):
     config = []
-    intf_cfg = [' ']
+    intf_cfg = []
+    ospf_cfg = []
     isis_cfg = []
     rsvp_cfg = []
+    ldp_cfg = []
     net = None
     
     if hostname:
@@ -116,7 +145,8 @@ def generate_br9k_config(hostname, interfaces):
     for intf in interfaces:
         if not intf['name']:
             continue
-            
+           
+        intf_cfg.append("")
         intf_cfg.append(f"interface {intf['name']}")
         
         if intf['ip']:
@@ -126,16 +156,33 @@ def generate_br9k_config(hostname, interfaces):
             else:
                 intf_cfg.append(f"ip address {intf['ip']}")
         
+        if intf['ldp']:
+            if intf['name'].startswith('lo'):
+                ldp_cfg.append("router ldp")
+                ldp_cfg.append(f"router-id {IPv4Interface(intf['ip']).ip}")
+                ldp_cfg.append(f"transport-address ipv4 {IPv4Interface(intf['ip']).ip}")
+                ldp_cfg.append(f"exit")
+            else:
+                intf_cfg.append("enable-ldp ipv4")
+        
+        if intf['ospf']:
+            if intf['name'].startswith('lo'):
+                ospf_cfg.append("router ospf 1")
+                ospf_cfg.append(f"ospf router-id {IPv4Interface(intf['ip']).ip}")
+                ospf_cfg.append(f"network {intf['ip']} area 0")
+            else:
+                ospf_cfg.append(f"network {ip_network(intf['ip'], strict=False)} area 0")
+
         if intf['isis']:
             if intf['name'].startswith('lo'):
                 isis_cfg.append("router isis 1")
                 isis_cfg.append("is-type level-2-only")
                 isis_cfg.append(f"net {net}")
-                isis_cfg.append(f"passive-interface {intf['name']}")
+                intf_cfg.append("ip router isis 1")
             else:
                 intf_cfg.append("ip router isis 1")
                 intf_cfg.append("isis network point-to-point")
-        
+
         if intf['mpls']:
             if not intf['name'].startswith('lo'):
                 intf_cfg.append("label-switching")
@@ -147,19 +194,24 @@ def generate_br9k_config(hostname, interfaces):
                 rsvp_cfg.append("router rsvp")
                 rsvp_cfg.append("exit")
 
-        intf_cfg.append("exit")
-
+    if len(ospf_cfg) > 0:
+        ospf_cfg.insert(0, ' ')
     if len(isis_cfg) > 0:
         isis_cfg.insert(0, ' ')
+    if len(ldp_cfg) > 0:
+        ldp_cfg.insert(0, ' ')
     if len(rsvp_cfg) > 0:
         rsvp_cfg.insert(0, ' ')
    
-    return "\n".join(config + isis_cfg + rsvp_cfg + intf_cfg)
+    return "\n".join(config + ospf_cfg + isis_cfg + ldp_cfg + rsvp_cfg + intf_cfg)
 
 def generate_cisco_config(hostname, interfaces):
     config = []
-    intf_cfg = [' ']
+    intf_cfg = []
+    ospf_cfg = []
     isis_cfg = []
+    rsvp_cfg = []
+    ldp_cfg = []
     net = None
     
     if hostname:
@@ -172,11 +224,13 @@ def generate_cisco_config(hostname, interfaces):
     for intf in interfaces:
         if not intf['name']:
             continue
-            
+        
+        intf_cfg.append("")
         intf_cfg.append(f"interface {intf['name']}")
         
         if intf['ip']:
             interface = IPv4Interface(intf['ip'])
+            wildcard_mask = IPv4Network(interface.network.exploded).hostmask
             intf_cfg.append(f"ip address {interface.ip} {interface.netmask}")
             #intf_cfg.append(f"ip address {intf['ip'].replace('/32', ' 255.255.255.255')\
             #       .replace('/24', ' 255.255.255.0').replace('/30', '255.255.255.252')}")
@@ -185,6 +239,14 @@ def generate_cisco_config(hostname, interfaces):
             else:
                 intf_cfg.append(f"no shutdown")
         
+        if intf['ospf']:
+            if intf['name'].startswith('lo'):
+                ospf_cfg.append("router ospf 1")
+                ospf_cfg.append(f"router-id {IPv4Interface(intf['ip']).ip}")
+                ospf_cfg.append(f"network {interface.network.network_address} {wildcard_mask} area 0")
+            else:
+                ospf_cfg.append(f"network {interface.network.network_address} {wildcard_mask} area 0")
+
         if intf['isis']:
             if intf['name'].startswith('lo'):
                 isis_cfg.append("router isis 1")
@@ -199,11 +261,17 @@ def generate_cisco_config(hostname, interfaces):
             if not intf['name'].startswith('lo'):
                 intf_cfg.append("mpls ip")
         
-        intf_cfg.append("exit")
+    if len(ospf_cfg) > 0:
+        ospf_cfg.insert(0, ' ')
     if len(isis_cfg) > 0:
         isis_cfg.insert(0, ' ')
+    if len(ldp_cfg) > 0:
+        ldp_cfg.insert(0, ' ')
+    if len(rsvp_cfg) > 0:
+        rsvp_cfg.insert(0, ' ')
 
-    return "\n".join(config + isis_cfg + intf_cfg)
+    return "\n".join(config + ospf_cfg + isis_cfg + ldp_cfg + rsvp_cfg + intf_cfg)
+
 
 def generate_junos_config(hostname, interfaces):
     config = []
@@ -215,7 +283,7 @@ def generate_junos_config(hostname, interfaces):
     
     if hostname:
         config.append(f"set system host-name {hostname}")
-        config.append("set system root-authentication encrypted-password '$1$FdBjSEAv$y9.MbWvwWwISggGWbCraX1'")
+#        config.append("set system root-authentication encrypted-password '$1$FdBjSEAv$y9.MbWvwWwISggGWbCraX1'")
     
     for intf in interfaces:
         if not intf['name']:

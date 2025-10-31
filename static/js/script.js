@@ -27,7 +27,7 @@ function updVendor() {
         lo.placeholder = 'lo0';
     } else if (select.value === 'BR9k') {
         select.classList.add('br9k');
-        lo.placeholder = 'loopback 1';
+        lo.placeholder = 'loopback1';
     }
 
 }
